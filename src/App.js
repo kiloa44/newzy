@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import SearchAppBar from "./components/SearchAppBar";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
+import Home from "./components/Home";
 import "./firebase";
 
 function App() {
@@ -13,6 +14,9 @@ function App() {
     <Router>
       <Header></Header>
       <Switch>
+        <Route path="/home">
+          <Home></Home>
+        </Route>
         <Route path="/login">
           <SignIn></SignIn>
         </Route>
