@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -13,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import * as firebase from "firebase";
+import { useHistory } from "react-router-dom";
 
 function Copyright() {
   return (
@@ -48,12 +49,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn() {
+  const history = useHistory();
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setUserId(user.uid);
+      } else {
+        setUserId(null);
+      }
+    });
+  }, []);
 
   return (
     <Container component="main" maxWidth="xs">
+      {userId ? history.push("/") : console.log(`need logging in`)}
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -91,6 +106,7 @@ export default function SignIn() {
               setPassword(event.target.value);
             }}
           />
+          <Typography className={classes.RedTextWarning}>{errMsg}</Typography>
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
@@ -105,10 +121,10 @@ export default function SignIn() {
                 .auth()
                 .signInWithEmailAndPassword(email, password)
                 .then(() => {
-                  console.log(`Logged in as ${email}`);
+                  history.push("/");
                 })
                 .catch((err) => {
-                  console.log(err);
+                  setErrMsg(err.message);
                 });
             }}
           >

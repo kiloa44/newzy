@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -10,7 +10,10 @@ import {
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
+import Button from "@material-ui/core/Button";
+
 import { Link } from "react-router-dom";
+import * as firebase from "firebase";
 
 const useStyles = makeStyles((theme) => ({
   typographyStyle: {
@@ -66,6 +69,18 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = () => {
   const classes = useStyles();
+  const [userId, setUserId] = useState(null);
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setUserId(user.uid);
+        console.log("user id =>", user.uid, user);
+      } else {
+        setUserId(null);
+      }
+    });
+  }, []);
+
   return (
     <AppBar position="static" color="inherit">
       <Toolbar>
@@ -111,32 +126,57 @@ const Header = () => {
             About US
           </Typography>{" "}
           {/* Sell */}
-          <Grid item container xs={false} sm={2} direction="row">
-            <Grid item xs={6}>
-              <Typography>
-                <Link
-                  to="/login"
-                  onClick={() => {
-                    console.info("login");
-                  }}
-                >
-                  Login
-                </Link>
-              </Typography>
+          {!userId ? (
+            <Grid item container xs={false} sm={2} direction="row">
+              <Grid item xs={6}>
+                <Typography>
+                  <Link
+                    to="/login"
+                    onClick={() => {
+                      console.info("login");
+                    }}
+                  >
+                    Login
+                  </Link>
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography>
+                  <Link
+                    to="/signup"
+                    onClick={() => {
+                      console.info("signup");
+                    }}
+                  >
+                    Sign Up
+                  </Link>
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <Typography>
-                <Link
-                  to="/signup"
-                  onClick={() => {
-                    console.info("signup");
-                  }}
-                >
-                  Sign Up
-                </Link>
-              </Typography>
+          ) : (
+            <Grid item container xs={false} sm={2} direction="row">
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={() => {
+                  firebase
+                    .auth()
+                    .signOut()
+                    .then(function () {
+                      console.log("sign out successfully");
+                      setUserId(null);
+                    })
+                    .catch(function (error) {
+                      console.log(error);
+                    });
+                }}
+              >
+                Sign out
+              </Button>
             </Grid>
-          </Grid>
+          )}
         </Grid>
       </Toolbar>
     </AppBar>

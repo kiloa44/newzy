@@ -19,6 +19,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { useHistory } from "react-router-dom";
 import News from "./Parser";
 import axios from "axios";
+import guardian from "../assests/TheGuardian.png";
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -54,44 +55,27 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
 }));
+const defaultProps = {
+  bgcolor: "background.paper",
+  borderColor: "text.primary",
+  m: 1,
+  border: 1,
+  borderRadius: 16,
+  style: { width: "35rem", height: "15rem" },
+};
 
-export default function Home() {
+export default function Interest() {
   const classes = useStyles();
   const history = useHistory();
   const [userId, setUserId] = useState(null);
-  const [feed, setFeed] = useState({});
-  const [cards, setCards] = useState([]);
+  const [websites, setWebsites] = useState([]);
+  const [interests, setInterests] = useState([]);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         setUserId(user.uid);
-        console.log("I am in home and here is the user", user.uid);
-        axios.get("http://localhost:3001/rss").then((res) => {
-          console.log("in useeffect", res);
-          let cards = [];
-          res.data.items.forEach((item) => {
-            console.log(item);
-            cards.push(
-              <Grid item xs={12} sm={6} lg={4} className={classes.mar}>
-                <SimpleCard
-                  contentSnippet={item.contentSnippet}
-                  title={item.title}
-                  pubDate={item.pubDate}
-                />
-              </Grid>
-            );
-          });
-          console.log(cards);
-          setCards(cards);
-          console.log(feed);
-
-          // fetch("https://www.theguardian.com/international/rss").then(function (
-          //   feedNews
-          // ) {
-          //   console.log("feedNews", feedNews);
-          // });
-        });
+        console.log("I am in interest page and here is the user", user.uid);
       } else {
         setUserId(null);
       }
@@ -100,16 +84,35 @@ export default function Home() {
   let spin = (
     <div className={classes.root}>
       <CircularProgress />
-      <CircularProgress color="secondary" />
     </div>
   );
   return (
     <Container component="main" maxWidth="lg">
       <CssBaseline />
       <div className={classes.paper}>
-        <Grid container>{cards ? cards : spin}</Grid>
+        <Avatar className={classes.avatar}>
+          {/*!userId ? history.push("/signin") : console.log("there is no user")*/}
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Tell us you interests
+        </Typography>
+        <form className={classes.form} noValidate>
+          <Grid container maxWidth="lg">
+            <Box borderRadius={16} {...defaultProps}>
+              <img
+                src={guardian}
+                alt="The Guardian Logo"
+                height={250}
+                width={500}
+                {...defaultProps}
+                borderRadius={16}
+              ></img>
+            </Box>
+          </Grid>
+        </form>
       </div>
-      <Box mt={8}>
+      <Box mt={5}>
         <Copyright />
       </Box>
     </Container>

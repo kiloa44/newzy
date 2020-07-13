@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +12,14 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import * as firebase from "firebase";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+  useHistory,
+} from "react-router-dom";
 
 function Copyright() {
   return (
@@ -47,13 +55,61 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignUp() {
+  let history = useHistory();
+
   const classes = useStyles();
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setUserId(user.uid);
+      } else {
+        setUserId(null);
+      }
+    });
+  }, []);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [secoundName, set2ndName] = useState("");
+  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [userId, setUserId] = useState(null);
+
+  const handleSubmit = () => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .set({
+            Email: email,
+            FirstName: firstName,
+            LastName: secoundName,
+          })
+          .then(() => {
+            history.push("/");
+          })
+
+          .catch((err) => {
+            setErrMsg(err.message);
+          });
+      })
+
+      .catch((err) => {
+        setErrMsg(err.message);
+      });
+  };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
+          {userId ? history.push("/") : console.log("there is no user")}
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
@@ -71,6 +127,9 @@ export default function SignUp() {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                onChange={(e) => {
+                  setFirstName(e.target.value);
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -82,6 +141,9 @@ export default function SignUp() {
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
+                onChange={(e) => {
+                  set2ndName(e.target.value);
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -93,6 +155,9 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -105,6 +170,9 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -114,11 +182,13 @@ export default function SignUp() {
               />
             </Grid>
           </Grid>
+          <Typography className={classes.RedTextWarning}>{errMsg}</Typography>
           <Button
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={handleSubmit}
           >
             Sign Up
           </Button>
