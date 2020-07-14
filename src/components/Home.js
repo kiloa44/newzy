@@ -19,6 +19,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { useHistory } from "react-router-dom";
 import News from "./Parser";
 import axios from "axios";
+import noimage from "../assests/noimage.png";
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -71,13 +72,18 @@ export default function Home() {
           console.log("in useeffect", res);
           let cards = [];
           res.data.items.forEach((item) => {
-            console.log(item);
+            // console.log(item["media:content"].$.url);
+            let url = noimage;
+            if (item["media:content"] !== undefined) {
+              url = item["media:content"].$.url;
+            }
             cards.push(
               <Grid item xs={12} sm={6} lg={4} className={classes.mar}>
                 <SimpleCard
                   contentSnippet={item.contentSnippet}
                   title={item.title}
                   pubDate={item.pubDate}
+                  image={url}
                 />
               </Grid>
             );

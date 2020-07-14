@@ -17,9 +17,11 @@ import SimpleCard from "./Card";
 import { red } from "@material-ui/core/colors";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useHistory } from "react-router-dom";
+// import ImagePicker from "react-image-picker";
 import News from "./Parser";
 import axios from "axios";
-import guardian from "../assests/TheGuardian.png";
+import MyImgPicker from "./imgPicker";
+
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -99,16 +101,7 @@ export default function Interest() {
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container maxWidth="lg">
-            <Box borderRadius={16} {...defaultProps}>
-              <img
-                src={guardian}
-                alt="The Guardian Logo"
-                height={250}
-                width={500}
-                {...defaultProps}
-                borderRadius={16}
-              ></img>
-            </Box>
+            <MyImgPicker></MyImgPicker>
           </Grid>
         </form>
       </div>

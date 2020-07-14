@@ -39,6 +39,12 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: red[500],
   },
 }));
+let cardStyle = {
+  display: "block",
+  width: "30vw",
+  transitionDuration: "0.3s",
+  height: "45vw",
+};
 
 export default function SimpleCard(props) {
   const classes = useStyles();
@@ -67,7 +73,7 @@ export default function SimpleCard(props) {
         />
         <CardMedia
           className={classes.media}
-          image="/static/images/cards/paella.jpg"
+          image={props.image}
           title={props.title}
         />
         <CardContent>

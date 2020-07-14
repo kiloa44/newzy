@@ -3,7 +3,11 @@ var Parser = require("rss-parser");
 var appRouter = function (app) {
   app.get("/rss", function (req, res) {
     // res.status(200).send("Welcome to our restful API");
-    var parser = new Parser();
+    var parser = new Parser({
+      customFields: {
+        item: ["media:content"],
+      },
+    });
     let urls = [
       "https://www.theguardian.com/international/rss",
       "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
