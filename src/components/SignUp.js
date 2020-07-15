@@ -91,7 +91,7 @@ export default function SignUp() {
             LastName: secoundName,
           })
           .then(() => {
-            history.push("/");
+            history.push("/interests");
           })
 
           .catch((err) => {

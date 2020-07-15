@@ -83,6 +83,7 @@ export default function Home() {
                   contentSnippet={item.contentSnippet}
                   title={item.title}
                   pubDate={item.pubDate}
+                  link={item.link}
                   image={url}
                 />
               </Grid>

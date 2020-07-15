@@ -45,10 +45,22 @@ let cardStyle = {
   transitionDuration: "0.3s",
   height: "45vw",
 };
+function iconStyles() {
+  return {
+    pressed: {
+      color: "red",
+    },
+    notPressed: {
+      color: "inherit",
+    },
+  };
+}
 
 export default function SimpleCard(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const [num, setNum] = React.useState(0);
+  const [color, setColor] = React.useState("inherit");
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -56,7 +68,7 @@ export default function SimpleCard(props) {
 
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea onClick={() => (window.location.href = props.link)}>
         <CardHeader
           //         avatar={
           //             <Avatar aria-label="recipe" className={classes.avatar}>
@@ -89,7 +101,18 @@ export default function SimpleCard(props) {
       </CardActionArea>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
+          <FavoriteIcon
+            color={color}
+            onClick={() => {
+              console.log(num);
+              setNum((c) => c + 1);
+              if (num % 2 == 0) {
+                setColor("secondary");
+              } else {
+                setColor("inherit");
+              }
+            }}
+          />
         </IconButton>
         <IconButton aria-label="share">
           <ShareIcon />
